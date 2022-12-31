@@ -27,7 +27,7 @@ const typeDefs = gql`
     }
 
     type Post {
-        text : String!
+        description : String!
         title: String!
         date: Date!
         _id: ID!
@@ -35,10 +35,11 @@ const typeDefs = gql`
         secondaryMedia: String
         secondaryMediaType: String
         comments: [Comment]
+        genre: [String]
     }
 
     type Dashpost {
-        text: String!
+        description: String!
         title: String!
         primaryMedia: String!
         date: Date!
@@ -46,6 +47,7 @@ const typeDefs = gql`
         trending: [Date]
         postID: ID!
         _id : ID
+        genre: [String]
     }
 
     type Movie {
@@ -57,7 +59,7 @@ const typeDefs = gql`
         language: String!
         stars: [String!]
         comments: Comment
-        releaseDate: String
+        releaseDate: Date
         genre: [String]
         source: String
         _id : ID
@@ -69,12 +71,16 @@ const typeDefs = gql`
         title: String!
         description: String!
         primaryMedia: String!
-        secondaryMedia: String
+        secondaryMedia: String!
         date: Date!
-        stars: [String]
+        stars: [String!]
         comments:[Comment]
         label: String
         _id : ID
+        album: String
+        trackNumber: String
+        next: ID
+        previous: ID
     }
 
     type Series {
@@ -86,7 +92,7 @@ const typeDefs = gql`
         language: String!
         stars: [String!]
         comments: Comment
-        releaseDate: String
+        releaseDate: Date
         genre: [String]
         season: String!
         episode:String!
@@ -102,6 +108,20 @@ const typeDefs = gql`
         value: String!
     }
 
+    type Table{
+        table: String!
+        sport: String!
+        league: String!
+        date: Date!
+    }
+
+    type Fixture{
+        fixture: String!
+        sport: String!
+        league: String!
+        date: Date!
+    }
+
     type Query {
         findUser(username: String): User
         searchUsers(username:String): [User]
@@ -114,22 +134,27 @@ const typeDefs = gql`
         findSeries(id: ID) : Series
         trending:[ Dashpost]
         findComment: Comment
+        tables: [Table]
+        fixtures:[Fixture]
+        footballNews:[Post]
+        allFootball: [Post]
+        relatedPost(genre: String): [Post]
     }
 
     type Mutation {
-        resetPassword(email: String): User
+        resetPassword(email: String!): User
 
         passwordChange(
             password: String
             resetToken: String
-        ) : User
+        ) : Token
 
         signUp(
             name: String!
             email: String!
             username: String!
             password: String!
-        ): User
+        ): Token
 
         signIn(
             username: String!
@@ -137,46 +162,38 @@ const typeDefs = gql`
         ): Token
 
         createPost(
-            text: String!
+            description: String!
             title: String!
             primaryMedia: String!
             secondaryMedia: String
             secondaryMediaType: String
-            date: Date!
+            genre: [String!]
         ): Post
-
-        createDashPost(
-            text: String!
-            title: String!
-            primaryMedia: String!
-            date: Date!
-            type: String!
-            postId: ID
-        ): Dashpost
 
         createMovie(
             description: String!
             title: String!
             primaryMedia: String!
             secondaryMedia: String!
-            date: Date!
             language: String!
-            stars: [String]
-            releaseDate: String
-            genre: [String]
+            stars: [String!]
+            releaseDate: Date!
+            genre: [String!]
             source: String
-            country: String
+            country: String!
             director: String
         ): Movie
 
         createMusic(
             title: String!
+            description: String!
             primaryMedia: String!
-            secondaryMedia: [String]
-            date: Date!
-            stars: [String]
-            genre: [String]
+            secondaryMedia: String!
+            stars: [String!]
+            genre: [String!]
             label: String
+            album: String
+            trackNumber: String
         ): Music
 
         createSeries(
@@ -184,24 +201,20 @@ const typeDefs = gql`
             title: String!
             primaryMedia: String!
             secondaryMedia: String!
-            date: Date!
             language: String!
-            stars: [String]
-            releaseDate: String
-            genre: [String]
+            stars: [String!]
+            releaseDate: Date!
+            genre: [String!]
             source: String
             season: String!
             episode: String!
             episodeTitle: String!
-            next: ID
-            previous: ID
-            country: String
+            country: String!
             director: String
         ): Series
 
         createComment(
             text: String!
-            date: Date!
             sender: ID!
             postID: ID!
             postType: String!
@@ -233,6 +246,22 @@ const typeDefs = gql`
             bio: String
             name: String
         ): User
+
+        createTrend(
+            postID: ID!
+        ):Dashpost
+
+        createTable(
+            table: String!
+            sport: String!
+            league: String!
+        ):Table
+
+        createFixture(
+            fixture: String!
+            sport: String!
+            league: String!
+        ): Fixture
 
     }
 

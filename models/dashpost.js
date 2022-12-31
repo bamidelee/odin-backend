@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-    text:{
+    description:{
         type: String,
        required: true,
     },
@@ -30,6 +30,12 @@ const schema = new mongoose.Schema({
             type: Date,
         }
      ], 
+
+     genre: [
+         {
+            type: String
+         }
+     ],
 
      postID : {
         type: mongoose.Schema.Types.ObjectId,

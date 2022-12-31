@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-    text:{
+    description:{
         type: String,
        required: true,
     },
@@ -19,7 +19,7 @@ const schema = new mongoose.Schema({
     secondaryMedia:{
         type: String,
     },
-    secondarymediatype: {
+    secondaryMediaType: {
         type: String,
     },
 
@@ -32,6 +32,13 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'COMMENT'
      }],
+
+
+     genre: [
+        {
+            type: String
+        }
+     ]
      
 
 })

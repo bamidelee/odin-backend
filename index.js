@@ -32,21 +32,13 @@ const start = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-  
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   })
 
   await server.start();
 
-  app.use('/', cors({ origin: ['https://localhost:3000', 'https://studio.apollographql.com'] }), json(), expressMiddleware(server,{
-    context: async ({ req }) => {
-      const auth = req ? req.headers.authorization : null
-      if (auth && auth.toLocaleLowerCase().startsWith('bearer')) {
-        const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
-        const currentUser = await User.findById(decodedToken.id)
-        return { currentUser }
-      }
-    }
+  app.use('/graphql', cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'http://localhost:3001'] }), json(), expressMiddleware(server, {
+    context: async ({ req }) => ({ token: req.headers.authorization }),
   }));
 
   await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));

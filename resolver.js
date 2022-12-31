@@ -1,4 +1,5 @@
 const {UserInputError, AuthenticationError} = require('apollo-server')
+const { GraphQLScalarType, Kind } = require('graphql');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
@@ -20,6 +21,8 @@ const Movie = require('./models/movies')
 const Music = require('./models/music')
 const Series = require('./models/series')
 const Comment = require('./models/comment')
+const Table = require('./models/table')
+const Fixture = require('./models/fixtures')
 
 
 const resolvers = {
@@ -42,16 +45,25 @@ const resolvers = {
     }),
 
     Query:{
-        findUser: async(root, args) => User.findOne({username: args.username}),
+        footballNews: async(root, args) => await Post.find({genre: 'football'}).sort({_id: -1}).limit(6),
+        allFootball: async(root, args) => await Post.find({genre: 'football'}),
+        relatedPost: async(roots, args) => await Post.find({genre: args.gere}).sort({_id: -1}).limit(6),
+        tables: async(root, args) => await Table.find({}),
+        fixtures: async(root, args) => await Fixture.find({}),
+        findUser: async(root, args) => await User.findOne({username: args.username}),
 
         searchUsers: async(root, args) => {
             const reg = new RegExp(args.username)
             return await User.find({username:{$regex:reg, $options: 'si'}})     
         },
 
-        currentUser: async(root, args, context) => context.currentUser,
+        currentUser: async(root, args, context) => {
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            return currentUser
+        },
 
-        dashPost: async(root,args) => await Post.find({}),
+        dashPost: async(root,args) => await Dashpost.find({}),
 
         searchDashpost: async(root, args) => {
             const reg = new RegExp(args.title)
@@ -59,20 +71,138 @@ const resolvers = {
         },
         
         findPost: async(root, args) =>await Post.findById(args.id)
-        .populate('comments'),
+         .populate({path:'comments', populate:{path: 'sender'}})
+         .populate({path:'comments', populate:{path: 'likes'}})
+         .populate({path:'comments', populate:{path: 'thumbsUp'}})
+         .populate({path:'comments', populate:{path: 'hate'}})
+         .populate({path:'comments', populate:{path: 'sad'}})
+         .populate({path:'comments', populate:{path: 'funny'}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'sender'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'likes'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'thumbsUp'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'hate'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'sad'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'funny'}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sender'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'likes'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'thumbsUp'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'hate'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sad'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'funny'}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sender'}}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'likes'}}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'thumbsUp'}}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'hate'}}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sad'}}}}})
+         .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'funny'}}}}})
+         .exec(),
 
         findMovie: async(root, args) => await Movie.findById(args.id)
-        .populate('comments'),
+        .populate({path:'comments', populate:{path: 'sender'}})
+        .populate({path:'comments', populate:{path: 'likes'}})
+        .populate({path:'comments', populate:{path: 'thumbsUp'}})
+        .populate({path:'comments', populate:{path: 'hate'}})
+        .populate({path:'comments', populate:{path: 'sad'}})
+        .populate({path:'comments', populate:{path: 'funny'}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sender'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'likes'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'thumbsUp'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'hate'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sad'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'funny'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sender'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'likes'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'thumbsUp'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'hate'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sad'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'funny'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sender'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'likes'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'thumbsUp'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'hate'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sad'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'funny'}}}}})
+        .exec(),
 
         findMusic: async(root, args) => await Music.findById(args.id)
-        .populate('comments'),
+        .populate({path:'comments', populate:{path: 'sender'}})
+        .populate({path:'comments', populate:{path: 'likes'}})
+        .populate({path:'comments', populate:{path: 'thumbsUp'}})
+        .populate({path:'comments', populate:{path: 'hate'}})
+        .populate({path:'comments', populate:{path: 'sad'}})
+        .populate({path:'comments', populate:{path: 'funny'}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sender'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'likes'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'thumbsUp'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'hate'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sad'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'funny'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sender'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'likes'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'thumbsUp'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'hate'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sad'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'funny'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sender'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'likes'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'thumbsUp'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'hate'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sad'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'funny'}}}}})
+        .exec(),
 
         findSeries: async(root, args) => await Series.findById(args.id)
-        .populate('comments'),
+        .populate({path:'comments', populate:{path: 'sender'}})
+        .populate({path:'comments', populate:{path: 'likes'}})
+        .populate({path:'comments', populate:{path: 'thumbsUp'}})
+        .populate({path:'comments', populate:{path: 'hate'}})
+        .populate({path:'comments', populate:{path: 'sad'}})
+        .populate({path:'comments', populate:{path: 'funny'}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sender'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'likes'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'thumbsUp'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'hate'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sad'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'funny'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sender'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'likes'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'thumbsUp'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'hate'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sad'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'funny'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sender'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'likes'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'thumbsUp'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'hate'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sad'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'funny'}}}}})
+        .exec(),
 
         findComment: async(root, args) => await Comment.findById(args.id)
-        .populate('comments')
-        .populate('sender')
+        .populate({path:'comments', populate:{path: 'sender'}})
+        .populate({path:'comments', populate:{path: 'likes'}})
+        .populate({path:'comments', populate:{path: 'thumbsUp'}})
+        .populate({path:'comments', populate:{path: 'hate'}})
+        .populate({path:'comments', populate:{path: 'sad'}})
+        .populate({path:'comments', populate:{path: 'funny'}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sender'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'likes'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'thumbsUp'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'hate'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'sad'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'funny'}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sender'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'likes'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'thumbsUp'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'hate'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'sad'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'funny'}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sender'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'likes'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'thumbsUp'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'hate'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'sad'}}}}})
+        .populate({path:'comments', populate:{path:'comments', populate:{path:'comments', populate:{path: 'comments', populate:{path:'funny'}}}}})
         .exec(),
 
         trending: async(root, args) => {
@@ -84,23 +214,84 @@ const resolvers = {
 
 
     Mutation: {
+        createTable: async(root, args, context) => {
+            const {table, league, sport} = args
+
+            const TABLE= new Table({
+                league,
+                table,
+                sport,
+                date: new Date()
+            })
+
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
+
+            if(!verifiedUser){
+                throw new AuthenticationError('access denied')
+            }
+
+            const existingTable = await Table.findOne({league})
+
+            if(existingTable){
+                existingTable.table = table
+                existingTable.date = new Date()
+                await existingTable.save()
+
+                return existingTable
+            }
+
+            await TABLE.save()
+            return TABLE
+        },
+
+        createFixture: async(root, args, context) => {
+            const {fixture, league, sport} = args
+
+            const FIXTURE= new Fixture({
+                league,
+                fixture,
+                sport,
+                date: new Date()
+            })
+
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
+
+            if(!verifiedUser){
+                throw new AuthenticationError('access denied')
+            }
+
+            const existingFixture = await Fixture.findOne({league})
+
+            if(existingFixture){
+                existingFixture.fixture = fixture
+                existingFixture.date = new Date()
+                await existingFixture.save()
+
+                return existingFixture
+            }
+
+            await FIXTURE.save()
+            return FIXTURE
+        },
         resetPassword: async(root, args, context) => {
             const {email} = args
-            crypto.randomBytes(32, (err, buffer) =>{
+            const user = await User.findOne({email})
+            if(!user){
+                throw new UserInputError('Email does not belong to any account')
+            }
+            crypto.randomBytes(32, async (err, buffer) =>{
                 if(err){
                     console.log(err)
                 }
                 const token = buffer.toString('hex')
-                User.findOne({email})
-                .then(user => {
-                    if(!user){
-                        throw new UserInputError('Email does not belong to any account')
-                    }
-
+              
                     user.resetToken = token
                     user.tokenExpire = Date.now() + 3600000
-                    user.save()
-                    .then(result => {
+                    
                         const link = `http://localhost:3000/reset/${user.resetToken}`
                         transporter.sendMail({
                             to: user.email,
@@ -114,11 +305,10 @@ const resolvers = {
                             If you did not request this, please ignore this email and your password will remain unchanged.</h5>`
                             
                         })
-
-                        return user
-                    })
-                })
+                       
             })
+            await user.save()
+            return user
         },
 
         passwordChange: async(root, args) => {
@@ -144,7 +334,13 @@ const resolvers = {
                       invalidArgs: args
                   })
               }
-              return user
+
+              const userForToken = {
+                username: user.username,
+                id: user._id
+            }
+            return{value: jwt.sign(userForToken, JWT_SECRET)}
+           
         },
 
         signUp: async(root,args) => {
@@ -171,7 +367,11 @@ const resolvers = {
                     invalidArgs: args
                 })
             }
-            return user
+            const userForToken = {
+                username: user.username,
+                id: user._id
+            }
+            return{value: jwt.sign(userForToken, JWT_SECRET)}
         },
 
         signIn: async(root, args) => {
@@ -190,18 +390,21 @@ const resolvers = {
         },
 
         createPost: async(root, args, context) => {
-            const { text,title, primaryMedia, secondaryMedia, secondaryMediaType} = args
+            const { description,title, primaryMedia, secondaryMedia, secondaryMediaType, genre} = args
            
             const post = new Post({
-                text,
+                description,
                 title,
                 primaryMedia,
                 secondaryMedia,
                 secondaryMediaType,
-                date: new Date()
+                date: new Date(),
+                genre
             })
 
-            const verifiedUser = context.currentUser.verified
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
             if(!verifiedUser){
                 throw new AuthenticationError('access denied')
             }
@@ -214,12 +417,13 @@ const resolvers = {
             })}
 
             const dashpost = new Dashpost({
-                text,
+                description,
                 title,
                 primaryMedia,
                 date: new Date(),
                 type: 'post',
-                postId: post._id
+                postID: post._id,
+                genre
                 
             })
 
@@ -250,7 +454,9 @@ const resolvers = {
                 date: new Date()
             })
 
-            const verifiedUser = context.currentUser.verified
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
             if(!verifiedUser){
                 throw new AuthenticationError('access denied')
             }
@@ -263,12 +469,13 @@ const resolvers = {
             })}
 
             const dashpost = new Dashpost({
-                text,
+                description,
                 title,
                 primaryMedia,
                 date: new Date(),
                 type: 'movie',
-                postId: movie._id
+                postID: movie._id,
+                genre
                 
             })
 
@@ -282,39 +489,62 @@ const resolvers = {
             return movie
         },
 
-        createMusic: async(root, args) => {
+        createMusic: async(root, args, context) => {
 
-            const{ title, primaryMedia, secondaryMedia, stars, genre, label} = args
-
+            const{description, title, primaryMedia, secondaryMedia, stars, genre, label, album, trackNumber} = args
+            const prioNumber = Number(trackNumber) -1
+            const prio = await Music.findOne({$and: [{album, trackNumber: prioNumber.toString()}]})
             const music = new Music({
                 title, 
+                description,
                 primaryMedia, 
                 secondaryMedia, 
                 stars, 
                 genre, 
                 label,
+                album,
+                trackNumber,
                 date: new Date()
             })
 
-            const verifiedUser = context.currentUser.verified
+            if(prio){
+              music.previous = prio._id
+
+            }
+
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
             if(!verifiedUser){
                 throw new AuthenticationError('access denied')
             }
 
             try{
-                await music.save()
+              await music.save()
             }
             catch (error) {throw new UserInputError(error.message, {
                 invalidArgs: args
             })}
 
+            if(prio){
+                prio.next = music._id
+
+                try{
+                    await prio.save()
+                }
+                catch (error) {throw new UserInputError(error.message, {
+                    invalidArgs: args
+                })}
+            }
+
             const dashpost = new Dashpost({
-                text,
+                description,
                 title,
                 primaryMedia,
                 date: new Date(),
                 type: 'music',
-                postId: music._id
+                postID: music._id,
+                genre
                 
             })
 
@@ -331,7 +561,8 @@ const resolvers = {
         createSeries: async(root, args, context) => {
             
             const {description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle} = args
-
+            const prioNumber = parseInt(episode) - 1
+            const prio = await Series.findOne({ $and: [{title}, { episode: prioNumber.toString()}, {season} ]})
             const series = new Series({
                 description, 
                 title, 
@@ -351,7 +582,13 @@ const resolvers = {
                 date: new Date()
             })
 
-            const verifiedUser = context.currentUser.verified
+            if(prio){
+                series.previous = prio._id
+            }
+
+            const decodedToken = jwt.verify(context.token, JWT_SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            const verifiedUser = currentUser.verified
             if(!verifiedUser){
                 throw new AuthenticationError('access denied')
             }
@@ -363,13 +600,25 @@ const resolvers = {
                 invalidArgs: args
             })}
 
+            if(prio){
+                prio.next = series._id
+
+                try{
+                    await prio.save()
+                }
+                catch (error) {throw new UserInputError(error.message, {
+                    invalidArgs: args
+                })}
+            }
+
             const dashpost = new Dashpost({
-                text,
+                description,
                 title,
                 primaryMedia,
                 date: new Date(),
                 type: 'series',
-                postId: series._id
+                postID: series._id,
+                genre
                 
             })
 
@@ -441,6 +690,9 @@ const resolvers = {
             catch (error) {throw new UserInputError(error.message, {
                 invalidArgs: args
             })}
+
+            const dashpost = Dashpost.findOne({postID})
+            dashpost.trending = dashpost.trending.concat(new Date())
 
             return comment
         },
@@ -550,7 +802,14 @@ const resolvers = {
             return comment
         },
         
-        
+        createTrend: async(root, args) => {
+            const {postID} = args
+            let post;
+
+            const dashpost = Dashpost.findOne({postID})
+            dashpost.trending = dashpost.trending.concat(new Date())
+
+        }
     },
 
 }

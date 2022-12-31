@@ -15,9 +15,9 @@ const schema = new mongoose.Schema({
         required: true,
     },
 
-    secondaryMedia:[{
+    secondaryMedia:{
         type: String,
-    }],
+    },
      date: {
         type: Date,
         required: true
@@ -45,6 +45,24 @@ const schema = new mongoose.Schema({
 
      label: {
         type: String,
+     },
+
+     album: {
+        type: String
+     },
+
+     trackNumber:{
+        type: String
+     },
+
+     next: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MUSIC'
+     },
+
+     previous:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MUSIC'
      }
 
 

@@ -42,7 +42,7 @@ const schema = new mongoose.Schema({
      }],
 
      releaseDate: {
-         type: String
+         type: Date
      },
 
      season: {
