@@ -45,9 +45,9 @@ const resolvers = {
     }),
 
     Query:{
-        footballNews: async(root, args) => await Post.find({genre: 'football'}).sort({_id: -1}).limit(6),
-        allFootball: async(root, args) => await Post.find({genre: 'football'}),
-        relatedPost: async(roots, args) => await Post.find({genre: args.gere}).sort({_id: -1}).limit(6),
+        dashNews: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
+        newsPage: async(root, args) => await Post.find({genre: args.genre}).sort({id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
+        relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         tables: async(root, args) => await Table.find({}),
         fixtures: async(root, args) => await Fixture.find({}),
         findUser: async(root, args) => await User.findOne({username: args.username}),
@@ -67,7 +67,7 @@ const resolvers = {
 
         searchDashpost: async(root, args) => {
             const reg = new RegExp(args.title)
-            return await Dashpost.find({title: {$regex: reg, $options: 'si'}})
+            return await Post.find({title: {$regex: reg, $options: 'si'}})
         },
         
         findPost: async(root, args) =>await Post.findById(args.id)

@@ -136,8 +136,11 @@ const typeDefs = gql`
         findComment: Comment
         tables: [Table]
         fixtures:[Fixture]
-        footballNews:[Post]
-        allFootball: [Post]
+        dashNews(genre: String):[Post]
+        newsPage(
+            genre: String
+            pageNumber: String
+            ): [Post]
         relatedPost(genre: String): [Post]
     }
 
