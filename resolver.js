@@ -1,4 +1,4 @@
-const {UserInputError, AuthenticationError} = require('apollo-server')
+const { GraphQLError } = require('graphql');
 const { GraphQLScalarType, Kind } = require('graphql');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
@@ -229,7 +229,9 @@ const resolvers = {
             const verifiedUser = currentUser.verified
 
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             const existingTable = await Table.findOne({league})
@@ -261,7 +263,9 @@ const resolvers = {
             const verifiedUser = currentUser.verified
 
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             const existingFixture = await Fixture.findOne({league})
@@ -281,7 +285,9 @@ const resolvers = {
             const {email} = args
             const user = await User.findOne({email})
             if(!user){
-                throw new UserInputError('Email does not belong to any account')
+                throw new GraphQLError('Email does not belong to an account', {
+                    extensions: { code: 'BAD_USER_INPUT' },
+                  });
             }
             crypto.randomBytes(32, async (err, buffer) =>{
                 if(err){
@@ -316,10 +322,14 @@ const resolvers = {
             const user = await User.findOne({resetToken})
 
             if(!user){
-                throw new AuthenticationError('authentication error')
+                throw new GraphQLError('Unauthorized', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             if(user.tokenExpire < this.Date.now()){
-                throw new UserInputError('link expired')
+                throw new GraphQLError('Token expired', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -330,9 +340,9 @@ const resolvers = {
             }
              
               catch(error)  {
-                  throw new UserInputError(error.messages,{
-                      invalidArgs: args
-                  })
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
               }
 
               const userForToken = {
@@ -346,7 +356,9 @@ const resolvers = {
         signUp: async(root,args) => {
             const existingUser = await User.findOne({username: args.username})
             if(existingUser){
-                throw new UserInputError('Username taken')
+                throw new GraphQLError('Username taken', {
+                    extensions: { code: 'BAD_USER_INPUT' },
+                  });
             }
             const {username, password, name, email} = args
             const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -363,9 +375,9 @@ const resolvers = {
             }
            
             catch(error)  {
-                throw new UserInputError(error.messages,{
-                    invalidArgs: args
-                })
+                throw new GraphQLError('Unable to save to server', {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
             const userForToken = {
                 username: user.username,
@@ -379,7 +391,9 @@ const resolvers = {
             const passwordCorrect = user === null? false
             : await bcrypt.compare(args.password, user.passwordHash) 
             if(!(user && passwordCorrect)){
-                throw new UserInputError('User not found')
+                throw new GraphQLError('User not found', {
+                    extensions: { code: 'BAD_USER_INPUT' },
+                  });
             }
 
             const userForToken = {
@@ -406,15 +420,19 @@ const resolvers = {
             const currentUser = await User.findById(decodedToken.id)
             const verifiedUser = currentUser.verified
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             try{
                 await post.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
 
             const dashpost = new Dashpost({
                 description,
@@ -430,9 +448,11 @@ const resolvers = {
             try{
                 await dashpost.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
 
             return post
         },
@@ -458,15 +478,19 @@ const resolvers = {
             const currentUser = await User.findById(decodedToken.id)
             const verifiedUser = currentUser.verified
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             try{
                 await movie.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
 
             const dashpost = new Dashpost({
                 description,
@@ -482,9 +506,11 @@ const resolvers = {
             try{
                 await dashpost.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
             
             return movie
         },
@@ -516,7 +542,9 @@ const resolvers = {
             const currentUser = await User.findById(decodedToken.id)
             const verifiedUser = currentUser.verified
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  })
             }
 
             try{
@@ -532,9 +560,11 @@ const resolvers = {
                 try{
                     await prio.save()
                 }
-                catch (error) {throw new UserInputError(error.message, {
-                    invalidArgs: args
-                })}
+                catch (error) {
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                      });
+                }
             }
 
             const dashpost = new Dashpost({
@@ -551,9 +581,11 @@ const resolvers = {
             try{
                 await dashpost.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
             
             return music
         },
@@ -590,15 +622,19 @@ const resolvers = {
             const currentUser = await User.findById(decodedToken.id)
             const verifiedUser = currentUser.verified
             if(!verifiedUser){
-                throw new AuthenticationError('access denied')
+                throw new GraphQLError('Not verified', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             try{
                 await series.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
 
             if(prio){
                 prio.next = series._id
@@ -606,9 +642,11 @@ const resolvers = {
                 try{
                     await prio.save()
                 }
-                catch (error) {throw new UserInputError(error.message, {
-                    invalidArgs: args
-                })}
+                catch (error) {
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                      });
+                }
             }
 
             const dashpost = new Dashpost({
@@ -625,9 +663,11 @@ const resolvers = {
             try{
                 await dashpost.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
             
             return series
         },
@@ -639,7 +679,9 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
 
             const comment = new Comment({
@@ -651,9 +693,9 @@ const resolvers = {
             try{
                 await comment.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {throw new GraphQLError(error.message, {
+                extensions: { code: 'INTERNAL_SERVER_ERROR' },
+              });}
 
             let post;
 
@@ -679,7 +721,9 @@ const resolvers = {
                 post = await Comment.findById(postID)
             }
             else{
-                throw new UserInputError('Invalid post type')
+                throw new GraphQLError('Ivalid post type', {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             post.comments = post.comments.concat(comment._id)
@@ -687,9 +731,11 @@ const resolvers = {
               try{
                 await post.save()
             }
-            catch (error) {throw new UserInputError(error.message, {
-                invalidArgs: args
-            })}
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
 
             const dashpost = Dashpost.findOne({postID})
             dashpost.trending = dashpost.trending.concat(new Date())
@@ -705,14 +751,18 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             comment.likes = comment.likes.concat(currentUser._id)
            try  {
                 await comment.save()
             }
             catch(error){
-                throw new UserInputError(error.message)
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             return comment
@@ -726,14 +776,18 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             comment.hate = comment.hate.concat(currentUser._id)
            try  {
                 await comment.save()
             }
             catch(error){
-                throw new UserInputError(error.message)
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             return comment
@@ -747,14 +801,18 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             comment.thumbsUp = comment.thumbsUp.concat(currentUser._id)
            try  {
                 await comment.save()
             }
             catch(error){
-                throw new UserInputError(error.message)
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             return comment
@@ -768,14 +826,18 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             comment.funny = comment.funny.concat(currentUser._id)
            try  {
                 await comment.save()
             }
             catch(error){
-                throw new UserInputError(error.message)
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             return comment
@@ -789,14 +851,18 @@ const resolvers = {
             const currentUser = context.currentUser
 
             if(!currentUser){
-                throw new AuthenticationError('Not logged in')
+                throw new GraphQLError('Not logged in', {
+                    extensions: { code: 'UNAUTHENTICATED' },
+                  });
             }
             comment.sad = comment.sad.concat(currentUser._id)
            try  {
                 await comment.save()
             }
             catch(error){
-                throw new UserInputError(error.message)
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
             }
 
             return comment
