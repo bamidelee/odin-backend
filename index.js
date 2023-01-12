@@ -37,7 +37,7 @@ const start = async () => {
 
   await server.start();
 
-  app.use('/graphql', cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'http://localhost:3001'] }), json(), expressMiddleware(server, {
+  app.use('/', cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'http://localhost:3001'] }), json(), expressMiddleware(server, {
     context: async ({ req }) => ({ token: req.headers.authorization }),
   }));
 
