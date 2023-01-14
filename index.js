@@ -37,7 +37,7 @@ const start = async () => {
 
   await server.start();
 
-  app.use('/', cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'bamidelee.github.io/odin-admin'] }), json(), expressMiddleware(server, {
+  app.use('/', cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'https://bamidelee.github.io/odin-admin/'] }), json(), expressMiddleware(server, {
     context: async ({ req }) => ({ token: req.headers.authorization }),
   }));
 
