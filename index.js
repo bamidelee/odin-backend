@@ -37,7 +37,7 @@ const start = async () => {
 
   await server.start();
 
-  app.use('/', cors({ origin: ['https://odin-frontend-ea5h.vercel.app/', 'https://studio.apollographql.com', 'https://bamidelee.github.io'] }), json(), expressMiddleware(server, {
+  app.use('/', cors({ origin: ['https://odin-frontend-ea5h.vercel.app', 'https://studio.apollographql.com', 'https://bamidelee.github.io'] }), json(), expressMiddleware(server, {
     context: async ({ req }) => ({ token: req.headers.authorization }),
   }));
 
