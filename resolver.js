@@ -46,7 +46,7 @@ const resolvers = {
 
     Query:{
         dashNews: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
-        newsPage: async(root, args) => await Post.find({genre: args.genre}).sort({id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
+        newsPage: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
         relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         tables: async(root, args) => await Table.find({}),
         fixtures: async(root, args) => await Fixture.find({}),
