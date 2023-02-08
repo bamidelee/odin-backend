@@ -37,7 +37,7 @@ const start = async () => {
 
   await server.start();
 
-  app.use('/', cors({ origin: ['https://odin-frontend-zeta.vercel.app', 'http://naijaodin.com.ng', 'https://bamidelee.github.io'] }), json(), expressMiddleware(server, {
+  app.use('/', cors({ origin: ['https://odin-frontend-zeta.vercel.app', 'https://naijaodin.com.ng', 'https://bamidelee.github.io'] }), json(), expressMiddleware(server, {
     context: async ({ req }) => ({ token: req.headers.authorization }),
   }));
 
