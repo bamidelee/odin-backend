@@ -458,7 +458,7 @@ const resolvers = {
         },
 
         createMovie: async(root, args, context) => {
-            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, country, director} = args
+            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, country, director, trailer} = args
             const movie = new Movie({
                 description, 
                 title,
@@ -470,7 +470,8 @@ const resolvers = {
                 genre, 
                 source, 
                 country, 
-                director, 
+                director,
+                trailer, 
                 date: new Date()
             })
 

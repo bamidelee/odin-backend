@@ -86,6 +86,10 @@ const schema = new mongoose.Schema({
 
      director: {
       type: String
+     },
+
+     trailer: {
+      type: String
      }
 
 })

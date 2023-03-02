@@ -65,6 +65,7 @@ const typeDefs = gql`
         _id : ID
         country: String
         director: String
+        trailer: String
     }
 
     type Music {
@@ -103,6 +104,7 @@ const typeDefs = gql`
         _id : ID
         country: String
         director: String
+        trailer: String
     }
     type Token {
         value: String!
@@ -185,6 +187,7 @@ const typeDefs = gql`
             source: String
             country: String!
             director: String
+            trailer: String
         ): Movie
 
         createMusic(
