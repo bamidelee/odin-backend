@@ -45,6 +45,7 @@ const resolvers = {
     }),
 
     Query:{
+        latestMovies: async(roor, args) => await Movie.find({}).sort({_id: -1}).limit(10),
         dashNews: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         newsPage: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
         relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
@@ -593,7 +594,7 @@ const resolvers = {
 
         createSeries: async(root, args, context) => {
             
-            const {description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle} = args
+            const {description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle, trailer} = args
             const prioNumber = parseInt(episode) - 1
             const prio = await Series.findOne({ $and: [{title}, { episode: prioNumber.toString()}, {season} ]})
             const series = new Series({
@@ -612,6 +613,7 @@ const resolvers = {
                 country, 
                 director, 
                 episodeTitle,
+                trailer,
                 date: new Date()
             })
 

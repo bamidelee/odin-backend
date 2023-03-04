@@ -144,6 +144,7 @@ const typeDefs = gql`
             pageNumber: String
             ): [Post]
         relatedPost(genre: String): [Post]
+        latestMovies: [Movie]
     }
 
     type Mutation {
@@ -217,6 +218,7 @@ const typeDefs = gql`
             episodeTitle: String!
             country: String!
             director: String
+            trailer: String
         ): Series
 
         createComment(
