@@ -142,8 +142,8 @@ const typeDefs = gql`
         newsPage(
             genre: String
             pageNumber: String
-            post: String
-            ): [Post]
+            type: String
+            ): [Dashpost]
         relatedPost(genre: String): [Post]
         latestMovies: [Movie]
     }
