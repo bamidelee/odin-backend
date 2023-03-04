@@ -145,7 +145,7 @@ const typeDefs = gql`
             type: String
             ): [Dashpost]
         relatedPost(genre: String): [Post]
-        latestMovies: [Movie]
+        latestMovies( pageNumber: String): [Movie]
     }
 
     type Mutation {

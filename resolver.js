@@ -45,7 +45,8 @@ const resolvers = {
     }),
 
     Query:{
-        latestMovies: async(roor, args) => await Movie.find({}).sort({_id: -1}).limit(10),
+        latestMovies: async(roor, args) => await Movie.find({}).sort({_id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
+        relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         dashNews: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         newsPage: async(root, args) => await Dashpost.find({genre: args.genre, type: args.type}).sort({_id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
         relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
