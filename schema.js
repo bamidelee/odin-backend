@@ -14,11 +14,11 @@ const typeDefs = gql`
     }
 
     type Comment {
-        text: String!
+        text: String
         sender: User
-        _id: ID!
+        _id: ID
         comments:[Comment]
-        date: Date!
+        date: Date
         likes: [User]
         thumbsUp: [User]
         hate: [User]
