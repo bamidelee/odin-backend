@@ -134,7 +134,7 @@ const typeDefs = gql`
         findMovie(id: ID): Movie
         findMusic(id: ID) : Music
         findSeries(id: ID) : Series
-        trending:[ Dashpost]
+        trending(type: String):[ Dashpost]
         findComment: Comment
         tables: [Table]
         fixtures:[Fixture]

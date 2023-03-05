@@ -210,7 +210,7 @@ const resolvers = {
         trending: async(root, args) => {
             const d = new Date()
             d.setDate(d.getDate() - 5);
-            return await Dashpost.find({trending: d})
+            return await Dashpost.find({trending: d, type: args.type})
         }
     },
 
