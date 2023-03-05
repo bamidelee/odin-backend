@@ -58,7 +58,7 @@ const typeDefs = gql`
         date: Date!
         language: String!
         stars: [String!]
-        comments: Comment
+        comments: [Comment]
         releaseDate: Date
         genre: [String]
         source: String
