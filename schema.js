@@ -155,6 +155,7 @@ const typeDefs = gql`
                 ): Count
         relatedPost(genre: String): [Post]
         latestMovies( pageNumber: String): [Movie]
+        latestMoviesCount: Count
     }
 
     type Mutation {
