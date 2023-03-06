@@ -53,7 +53,7 @@ const resolvers = {
            const count = await Dashpost.find({genre: args.genre, type: args.type}).count()
            return {count: count}
         },
-        laatestMovieCount: async(root, args) => {
+        latestMoviesCount: async(root, args) => {
             const count = await Dashpost.find({type: 'movie'}).count()
             return {count: count}
         },
