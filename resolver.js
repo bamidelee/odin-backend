@@ -69,7 +69,7 @@ const resolvers = {
 
         searchDashpost: async(root, args) => {
             const reg = new RegExp(args.title)
-            return await Post.find({title: {$regex: reg, $options: 'si'}})
+            return await Dashpost.find({title: {$regex: reg, $options: 'si'}})
         },
         
         findPost: async(root, args) =>await Post.findById(args.id)
