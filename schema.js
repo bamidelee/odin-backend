@@ -124,6 +124,10 @@ const typeDefs = gql`
         date: Date!
     }
 
+    type Count{
+        n : String
+    }
+
     type Query {
         findUser(username: String): User
         searchUsers(username:String): [User]
@@ -148,7 +152,7 @@ const typeDefs = gql`
                 genre: String
                 pageNumber: String
                 type: String
-                ): [Token]
+                ): Count
         relatedPost(genre: String): [Post]
         latestMovies( pageNumber: String): [Movie]
     }
