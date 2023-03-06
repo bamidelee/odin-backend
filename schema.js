@@ -150,7 +150,6 @@ const typeDefs = gql`
             ): [Dashpost]
             pageCount(
                 genre: String
-                pageNumber: String
                 type: String
                 ): Count
         relatedPost(genre: String): [Post]
