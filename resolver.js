@@ -49,7 +49,10 @@ const resolvers = {
         relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         dashNews: async(root, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         newsPage: async(root, args) => await Dashpost.find({genre: args.genre, type: args.type}).sort({_id: -1}).skip( parseInt(args.pageNumber) > 0 ? ( ( parseInt(args.pageNumber) - 1 ) * 10 ) : 0 ).limit(10),
-        pageCount: async(root, args) =>  await Dashpost.find({genre: args.genre, type: args.type}).count(),
+        pageCount: async(root, args) =>  {
+           const count = await Dashpost.find({genre: args.genre, type: args.type}).count()
+           return {count: count}
+        },
         relatedPost: async(roots, args) => await Post.find({genre: args.genre}).sort({_id: -1}).limit(6),
         tables: async(root, args) => await Table.find({}),
         fixtures: async(root, args) => await Fixture.find({}),
