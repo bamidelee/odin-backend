@@ -144,6 +144,11 @@ const typeDefs = gql`
             pageNumber: String
             type: String
             ): [Dashpost]
+            pageCount(
+                genre: String
+                pageNumber: String
+                type: String
+                ): [Token]
         relatedPost(genre: String): [Post]
         latestMovies( pageNumber: String): [Movie]
     }
