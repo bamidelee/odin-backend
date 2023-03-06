@@ -126,6 +126,7 @@ const typeDefs = gql`
 
     type Count{
         n : Int
+        count: Int
     }
 
     type Query {
