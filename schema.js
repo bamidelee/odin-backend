@@ -267,7 +267,7 @@ const typeDefs = gql`
         ): User
 
         createTrend(
-            postID: ID!
+            id: ID!
         ):Dashpost
 
         createTable(
