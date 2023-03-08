@@ -886,6 +886,15 @@ const resolvers = {
             const dashpost = await Dashpost.findOne({postID : postID})
             dashpost.trending = dashpost.trending.concat(new Date())
 
+            try  {
+                await dashpost.save()
+            }
+            catch(error){
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                  });
+            }
+
             return dashpost
 
         }
