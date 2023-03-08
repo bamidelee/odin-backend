@@ -219,7 +219,8 @@ const resolvers = {
             const d = new Date()
             const y = d.setDate(d.getDate() - 1);
             const t = d.setDate(d.getDate() - 2);
-            return await Dashpost.find({trending: { $gte :  new ISODate("2012-01-12T20:15:31Z")}})
+            return await Dashpost.find({trending: { $lt: new Date(),
+            }})
         }
     },
 
