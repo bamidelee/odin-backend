@@ -219,7 +219,7 @@ const resolvers = {
             const d = new Date()
             const y = d.setDate(d.getDate() - 1);
             const t = d.setDate(d.getDate() - 2);
-            return await Dashpost.find({$or : [{trending: d}, {trending: y}, {trending: t}]})
+            return await Dashpost.find({trending: new Date()})
         }
     },
 
