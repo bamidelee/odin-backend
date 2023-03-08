@@ -219,7 +219,7 @@ const resolvers = {
             const d = new Date()
             const y = d.setDate(d.getDate() - 1);
             const t = d.setDate(d.getDate() - 2);
-            return await Dashpost.find({trending: new Date()})
+            return await Dashpost.find({trending: { $gte : new Date().getTime() - 24*60*60*1000}})
         }
     },
 
