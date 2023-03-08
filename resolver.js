@@ -895,7 +895,7 @@ const resolvers = {
                   });
             }
 
-            return dashpost
+            return (dashpost)
 
         }
     },
