@@ -883,7 +883,7 @@ const resolvers = {
         
         createTrend: async(root, args) => {
             const {postID} = args
-            const dashpost = Dashpost.findOne({postID : postID})
+            const dashpost = await Dashpost.findOne({postID : postID})
             dashpost.trending = dashpost.trending.concat(new Date())
 
             return dashpost
