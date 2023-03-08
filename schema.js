@@ -139,7 +139,7 @@ const typeDefs = gql`
         findMovie(id: ID): Movie
         findMusic(id: ID) : Music
         findSeries(id: ID) : Series
-        trending(type: String):[ Dashpost]
+        trending(type: String trending: Date):[ Dashpost]
         findComment: Comment
         tables: [Table]
         fixtures:[Fixture]
