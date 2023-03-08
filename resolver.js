@@ -886,6 +886,8 @@ const resolvers = {
             const dashpost = Dashpost.findOne({postID : postID})
             dashpost.trending = dashpost.trending.concat(new Date())
 
+            return dashpost
+
         }
     },
 
