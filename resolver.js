@@ -622,7 +622,7 @@ const resolvers = {
 
         createSeries: async (root, args, context) => {
             const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle, trailer } = args
-            const existingData = await Dashpost.findOne({$and : [{title: title}, {episode: episode}, {season: season}]})
+            const existingData = await Series.findOne({$and : [{title: title}, {episode: episode}, {season: season}]})
             if (existingData){
                 throw new GraphQLError('file already exist', {
                     extensions: { code: 'INTERNAL_SERVER_ERROR'},
