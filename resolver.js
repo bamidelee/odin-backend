@@ -162,6 +162,8 @@ const resolvers = {
             .exec(),
 
         findSeries: async (root, args) => await Series.findById(args.id)
+            .populate({path: 'next'})
+            .populate({path: 'previous'})
             .populate({ path: 'comments', populate: { path: 'sender' } })
             .populate({ path: 'comments', populate: { path: 'likes' } })
             .populate({ path: 'comments', populate: { path: 'thumbsUp' } })
