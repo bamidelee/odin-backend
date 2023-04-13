@@ -226,7 +226,7 @@ const typeDefs = gql`
             source: String
             season: String!
             episode: String!
-            episodeTitle: String!
+            episodeTitle: String
             country: String!
             director: String
             trailer: String
