@@ -96,7 +96,7 @@ const typeDefs = gql`
         releaseDate: Date
         genre: [String]
         season: String!
-        episode:String
+        episode:String!
         episodeTitle: String!
         source: String
         next: Series
