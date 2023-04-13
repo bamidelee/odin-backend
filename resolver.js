@@ -531,14 +531,19 @@ const resolvers = {
 
             })
 
-            try {
-                await dashpost.save()
+            const existingSeason = await Dashpost.findOne({title: title})
+            if (existingSeason){
+                try {
+                    await dashpost.save()
+                }
+                catch (error) {
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                    });
+                }
             }
-            catch (error) {
-                throw new GraphQLError(error.message, {
-                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
-                });
-            }
+
+         
 
             return movie
         },
