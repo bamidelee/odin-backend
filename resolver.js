@@ -77,7 +77,7 @@ const resolvers = {
 
         searchDashpost: async (root, args) => {
             const reg = new RegExp(args.title)
-            return await Dashpost.find({ title: { $regex: reg, $options: 'si' } })
+            return await Dashpost.find({ title: { $regex: reg, $options: 'si' } }).sort({ _id: -1 })
         },
 
         findPost: async (root, args) => await Post.findById(args.id)
@@ -621,10 +621,15 @@ const resolvers = {
         },
 
         createSeries: async (root, args, context) => {
-
             const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle, trailer } = args
+            const existingData = await Dashpost.findOne({$and : [{title: title}, {episode: episode}, {season: season}]})
+            if (existingData){
+                throw new GraphQLError('file already exist', {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR'},
+                });
+            }
             const prioNumber = parseInt(episode) - 1
-            const prio = await Series.findOne({ $and: [{ title }, { episode: prioNumber.toString() }, { season }] })
+            const prio = await Series.findOne( {$and: [{ title }, { episode: prioNumber.toString() }, { season }] })
             const series = new Series({
                 description,
                 title,
