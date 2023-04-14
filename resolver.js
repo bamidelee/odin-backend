@@ -522,31 +522,25 @@ const resolvers = {
                 });
             }
 
-         
+            const dashpost = new Dashpost({
+                description,
+                title,
+                primaryMedia,
+                date: new Date(),
+                type: 'movie',
+                postID: movie._id,
+                genre
 
-            const existingSeason = await Dashpost.findOne({title: title})
-            if (!existingSeason){
-                const dashpost = new Dashpost({
-                    description,
-                    title,
-                    primaryMedia,
-                    date: new Date(),
-                    type: 'movie',
-                    postID: movie._id,
-                    genre
-    
-                })
-                try {
-                    await dashpost.save()
-                }
-                catch (error) {
-                    throw new GraphQLError(error.message, {
-                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
-                    });
-                }
+            })
+            try {
+                await dashpost.save()
+            }
+            catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                });
             }
 
-         
 
             return movie
         },
@@ -604,6 +598,7 @@ const resolvers = {
                     });
                 }
             }
+
 
             const dashpost = new Dashpost({
                 description,
@@ -693,25 +688,31 @@ const resolvers = {
                 }
             }
 
-            const dashpost = new Dashpost({
-                description,
-                title,
-                primaryMedia,
-                date: new Date(),
-                type: 'series',
-                postID: series._id,
-                genre
+            const existingSeason = await Dashpost.findOne({title: title})
 
-            })
+            if(!existingSeason){
+                const dashpost = new Dashpost({
+                    description,
+                    title,
+                    primaryMedia,
+                    date: new Date(),
+                    type: 'series',
+                    postID: series._id,
+                    genre
+    
+                })
+    
+                try {
+                    await dashpost.save()
+                }
+                catch (error) {
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                    });
+                }
+            }
 
-            try {
-                await dashpost.save()
-            }
-            catch (error) {
-                throw new GraphQLError(error.message, {
-                    extensions: { code: 'INTERNAL_SERVER_ERROR' },
-                });
-            }
+           
 
             return series
         },
