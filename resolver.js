@@ -224,7 +224,8 @@ const resolvers = {
             return await Dashpost.find({
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() - 2))
-                }
+                },
+                type: 'movie'
             })
         }
     },
@@ -710,9 +711,7 @@ const resolvers = {
                         extensions: { code: 'INTERNAL_SERVER_ERROR' },
                     });
                 }
-            }
-
-           
+            } 
 
             return series
         },
