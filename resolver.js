@@ -534,7 +534,7 @@ const resolvers = {
             })
 
             const existingSeason = await Dashpost.findOne({title: title})
-            if (existingSeason){
+            if (!existingSeason){
                 try {
                     await dashpost.save()
                 }
