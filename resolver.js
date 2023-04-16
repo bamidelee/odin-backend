@@ -236,12 +236,14 @@ const resolvers = {
             const t = d.setDate(d.getDate() - 2);
            
 
-            return await Dashpost.find({
+           const trend = await Dashpost.find({
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() - 7))
                 },
                 type: 'movie'
             })
+
+            return  trend.sort((a,b) => b.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length )
         },
 
 
@@ -249,14 +251,14 @@ const resolvers = {
             const d = new Date()
             const y = d.setDate(d.getDate() - 1);
             const t = d.setDate(d.getDate() - 2);
-            const trend =  await Dashpost.find({
+           return await Dashpost.find({
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() - 2))
                 },
                 type: 'series'
             })
 
-            return  trend.sort((a,b) => b.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length )
+          
         },
 
         popularSeries: async (root, args) => {
