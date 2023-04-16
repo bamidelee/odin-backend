@@ -154,7 +154,8 @@ const typeDefs = gql`
                 type: String
                 ): Count
         relatedPost(genre: String): [Post]
-        latestMovies( pageNumber: String): [Movie]
+        latestMovies( pageNumber: String): [Dashpost]
+        latestSeries( pageNumber: String): [Dashpost]
         latestMoviesCount: Count
     }
 
