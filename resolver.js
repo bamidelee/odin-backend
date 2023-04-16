@@ -230,6 +230,22 @@ const resolvers = {
             })
         },
 
+        popularMovies: async (root, args) => {
+            const d = new Date()
+            const y = d.setDate(d.getDate() - 1);
+            const t = d.setDate(d.getDate() - 2);
+            const trend =  await Dashpost.find({
+                trending: {
+                    $gte: new Date(new Date().setDate(new Date().getDate() - 7))
+                },
+                type: 'movie'
+            })
+
+            const sorted = trend.sort((a, b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 7))).lenght - b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 7))).lenght)
+            return sorted
+        },
+
+
         trendingSeries: async (root, args) => {
             const d = new Date()
             const y = d.setDate(d.getDate() - 1);
@@ -237,6 +253,18 @@ const resolvers = {
             return await Dashpost.find({
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() - 2))
+                },
+                type: 'series'
+            })
+        },
+
+        popularSeries: async (root, args) => {
+            const d = new Date()
+            const y = d.setDate(d.getDate() - 1);
+            const t = d.setDate(d.getDate() - 2);
+            return await Dashpost.find({
+                trending: {
+                    $gte: new Date(new Date().setDate(new Date().getDate() - 7))
                 },
                 type: 'series'
             })
