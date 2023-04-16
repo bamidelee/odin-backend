@@ -58,6 +58,11 @@ const resolvers = {
             const count = await Dashpost.find({ type: 'movie' }).count()
             return { count: count }
         },
+
+        latestSeriesCount: async (root, args) => {
+            const count = await Dashpost.find({ type: 'series' }).count()
+            return { count: count }
+        },
         relatedPost: async (roots, args) => await Post.find({ genre: args.genre }).sort({ _id: -1 }).limit(6),
         tables: async (root, args) => await Table.find({}),
         fixtures: async (root, args) => await Fixture.find({}),

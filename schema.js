@@ -160,6 +160,7 @@ const typeDefs = gql`
         latestMovies( pageNumber: String): [Dashpost]
         latestSeries( pageNumber: String): [Dashpost]
         latestMoviesCount: Count
+        latestSeriesCount: Count
     }
 
     type Mutation {
