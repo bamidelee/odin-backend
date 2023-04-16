@@ -243,7 +243,7 @@ const resolvers = {
                 type: 'movie'
             })
 
-            return  trend.sort((a,b) => b.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length )
+            return  {popularMovies: trend.sort((a,b) => b.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trend.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length )}
         },
 
 
