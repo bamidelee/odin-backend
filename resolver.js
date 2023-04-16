@@ -78,7 +78,7 @@ const resolvers = {
 
         searchDashpost: async (root, args) => {
             const reg = new RegExp(args.title)
-            return await Dashpost.find({ title: { $regex: reg, $options: 'si' }, type: {$not:{'post'}} }).sort({ _id: -1 })
+            return await Dashpost.find({ title: { $regex: reg, $options: 'si' }, type: {$not:{$regex: "post" }} }).sort({ _id: -1 })
         },
 
         findPost: async (root, args) => await Post.findById(args.id)
