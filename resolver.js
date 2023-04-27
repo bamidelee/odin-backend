@@ -688,7 +688,7 @@ const resolvers = {
                 });
             }
             const prioNumber = parseInt(episode) - 1
-            const prio = await Series.findOne( { title: title , episode: prioNumber.toString() ,  season : season })
+            const prio = await Series.findOne( {$and: [{ title }, { episode: prioNumber.toString() }, { season }] })
             const series = new Series({
                 description,
                 title,
@@ -713,19 +713,6 @@ const resolvers = {
                 series.previous = prio._id
             }
 
-            if (prio) {
-                prio.next = series._id
-
-                try {
-                    await prio.save()
-                }
-                catch (error) {
-                    throw new GraphQLError(error.message, {
-                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
-                    });
-                }
-            }
-
             const decodedToken = jwt.verify(context.token, JWT_SECRET)
             const currentUser = await User.findById(decodedToken.id)
             const verifiedUser = currentUser.verified
@@ -744,7 +731,18 @@ const resolvers = {
                 });
             }
 
-           
+            if (prio) {
+                prio.next = series._id
+
+                try {
+                    await prio.save()
+                }
+                catch (error) {
+                    throw new GraphQLError(error.message, {
+                        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+                    });
+                }
+            }
 
             const existingSeason = await Dashpost.findOne({title: title})
 
