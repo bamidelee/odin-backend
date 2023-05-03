@@ -234,7 +234,7 @@ const resolvers = {
                 type: 'movie'
             })
 
-            return   trend.sort((a,b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length ).slice(0,10)
+            return   trend.sort((a,b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length ).slice(0,20)
         },
 
         popularMovies: async (root, args) => {
@@ -265,7 +265,7 @@ const resolvers = {
                 type: 'series'
             })
 
-            return   trend.sort((a,b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length ).slice(0,10)
+            return   trend.sort((a,b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length - a.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 2))).length ).slice(0,20)
 
           
         },
