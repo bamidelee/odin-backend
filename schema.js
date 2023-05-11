@@ -163,9 +163,8 @@ const typeDefs = gql`
         latestSeriesCount: Count
         findContentByCountry(
             country: String
-            type: String
             pageNumber: String
-            ): [Dashpost]
+            ): [Movie]
     }
 
     type Mutation {
