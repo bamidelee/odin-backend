@@ -161,6 +161,11 @@ const typeDefs = gql`
         latestSeries( pageNumber: String): [Dashpost]
         latestMoviesCount: Count
         latestSeriesCount: Count
+        findContentByCountry(
+            country: String
+            type: String
+            pageNumber: String
+            ): [Dashpost]
     }
 
     type Mutation {
