@@ -165,6 +165,7 @@ const typeDefs = gql`
             country: String
             pageNumber: String
             ): [Movie]
+        countryCount(country: String): Count
     }
 
     type Mutation {
