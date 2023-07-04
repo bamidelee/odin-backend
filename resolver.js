@@ -267,7 +267,7 @@ const resolvers = {
 
            const trend = await Dashpost.find({
                 trending: {
-                    $gte: new Date(new Date().setDate(new Date().getDate() -60))
+                    $gte: new Date(new Date().setDate(new Date().getDate() -30))
                 },
                 type: 'movie'
             })
