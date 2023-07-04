@@ -143,8 +143,8 @@ const typeDefs = gql`
         trendingSeries(type: String):[ Dashpost]
         popularMovies(type: String):[ Dashpost]
         popularSeries(type: String):[ Dashpost]
-        alsoSeeMovie:[Dashpost]
-        alsoSeeSeries:[Dashpost]
+        alsoSeeMovie(type: String):[Dashpost]
+        alsoSeeSeries(type: String):[Dashpost]
         findComment: Comment
         tables: [Table]
         fixtures:[Fixture]
