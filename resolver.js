@@ -259,6 +259,38 @@ const resolvers = {
             return   trend.sort((a,b) => b.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 7))).length - a.trending.filter(d => d >= new Date(new Date().setDate(new Date().getDate() - 7))).length ).slice(0,10)
         },
 
+        alsoSeeMovie: async (root, args) => {
+            const d = new Date()
+            const y = d.setDate(d.getDate() - 1);
+            const t = d.setDate(d.getDate() - 2);
+           
+
+           const trend = await Dashpost.find({
+                trending: {
+                    $gte: new Date(new Date().setDate(new Date().getDate() -60))
+                },
+                type: 'movie'
+            })
+
+            return   trend.sort((a,b) => b.trending.length - a.trending.length ).slice(0,40)
+        },
+
+        alsoSeeSeries: async (root, args) => {
+            const d = new Date()
+            const y = d.setDate(d.getDate() - 1);
+            const t = d.setDate(d.getDate() - 2);
+           
+
+           const trend = await Dashpost.find({
+                trending: {
+                    $gte: new Date(new Date().setDate(new Date().getDate() -60))
+                },
+                type: 'series'
+            })
+
+            return   trend.sort((a,b) => b.trending.length - a.trending.length ).slice(0,40)
+        },
+
 
         trendingSeries: async (root, args) => {
             const d = new Date()
