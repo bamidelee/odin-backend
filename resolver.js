@@ -271,7 +271,7 @@ const resolvers = {
                 },
                 type: 'movie',
                 date:{
-                    $gte: ISODate("Tue May 16 18:47:00 +0000 2023")
+                    $gte:"Tue May 16 18:47:00 +0000 2023"
                 }
             })
 
@@ -290,7 +290,7 @@ const resolvers = {
                 },
                 type: 'series',
                 date:{
-                    $gte: ISODate("Tue May 16 18:47:00 +0000 2023")
+                    $gte:"Tue May 16 18:47:00 +0000 2023"
                 }
             })
 
