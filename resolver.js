@@ -269,7 +269,10 @@ const resolvers = {
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() -60))
                 },
-                type: 'movie'
+                type: 'movie',
+                date:{
+                    $gte: ISODate("2023-05-01T00:00:00.000Z")
+                }
             })
 
             return   trend.sort((a,b) => b.trending.length - a.trending.length ).slice(0,40)
@@ -285,7 +288,10 @@ const resolvers = {
                 trending: {
                     $gte: new Date(new Date().setDate(new Date().getDate() -60))
                 },
-                type: 'series'
+                type: 'series',
+                date:{
+                    $gte: ISODate("2023-05-01T00:00:00.000Z")
+                }
             })
 
             return   trend.sort((a,b) => b.trending.length - a.trending.length ).slice(0,40)
