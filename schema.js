@@ -48,6 +48,7 @@ const typeDefs = gql`
         postID: ID!
         _id : ID
         genre: [String]
+        request: String
     }
 
     type Movie {
@@ -66,6 +67,7 @@ const typeDefs = gql`
         country: String
         director: String
         trailer: String
+        request: String
     }
 
     type Music {
@@ -105,6 +107,7 @@ const typeDefs = gql`
         country: String
         director: String
         trailer: String
+        request: String
     }
     type Token {
         value: String!

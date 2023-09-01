@@ -90,6 +90,10 @@ const schema = new mongoose.Schema({
 
      trailer: {
       type: String
+     },
+
+     request: {
+      type: String
      }
 
 })

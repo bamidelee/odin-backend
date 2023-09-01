@@ -45,7 +45,7 @@ const resolvers = {
     }),
 
     Query: {
-        latestMovies: async (roor, args) => await Dashpost.find({type: 'movie'}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 10) : 0).limit(15),
+        latestMovies: async (roor, args) => await Dashpost.find({type: 'movie', $not : {request: 'true'}}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 10) : 0).limit(15),
         latestSeries: async (roor, args) => await Dashpost.find({type: 'series'}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 10) : 0).limit(15),
         relatedPost: async (roots, args) => await Post.find({ genre: args.genre }).sort({ _id: -1 }).limit(6),
         dashNews: async (root, args) => await Post.find({ genre: args.genre }).sort({ _id: -1 }).limit(6),
@@ -580,7 +580,7 @@ const resolvers = {
         },
 
         createMovie: async (root, args, context) => {
-            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, country, director, trailer } = args
+            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, country, director, trailer, request } = args
 
             const existingData = await Dashpost.findOne({title: title})
             if (existingData){
@@ -601,6 +601,7 @@ const resolvers = {
                 country,
                 director,
                 trailer,
+                request,
                 date: new Date()
             })
 
@@ -629,7 +630,8 @@ const resolvers = {
                 date: new Date(),
                 type: 'movie',
                 postID: movie._id,
-                genre
+                genre,
+                request
 
             })
             try {
@@ -707,7 +709,7 @@ const resolvers = {
                 date: new Date(),
                 type: 'music',
                 postID: music._id,
-                genre
+                genre,
 
             })
 
@@ -724,7 +726,7 @@ const resolvers = {
         },
 
         createSeries: async (root, args, context) => {
-            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle, trailer } = args
+            const { description, title, primaryMedia, secondaryMedia, language, stars, releaseDate, genre, source, season, episode, next, previous, country, director, episodeTitle, trailer, request } = args
             const existingData = await Series.findOne({$and : [{title: title}, {episode: episode}, {season: season}]})
             if (existingData){
                 throw new GraphQLError('file already exist', {
@@ -750,6 +752,7 @@ const resolvers = {
                 director,
                 episodeTitle,
                 trailer,
+                request,
                 date: new Date()
             })
 
@@ -798,7 +801,8 @@ const resolvers = {
                     date: new Date(),
                     type: 'series',
                     postID: series._id,
-                    genre
+                    genre,
+                    request
     
                 })
     
