@@ -40,7 +40,11 @@ const schema = new mongoose.Schema({
      postID : {
         type: mongoose.Schema.Types.ObjectId,
         required: true
-     }
+     },
+
+     request:{
+      type: String,
+   },
      
 })
 
