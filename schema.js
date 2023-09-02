@@ -215,6 +215,7 @@ const typeDefs = gql`
             country: String!
             director: String
             trailer: String
+            request: String
         ): Movie
 
         createMusic(
@@ -245,6 +246,7 @@ const typeDefs = gql`
             country: String!
             director: String
             trailer: String
+            request: String
         ): Series
 
         createComment(
