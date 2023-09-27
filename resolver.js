@@ -46,7 +46,9 @@ const resolvers = {
 
     Query: {
         latestMovies: async (roor, args) => await Dashpost.find({type: 'movie', request: {$not : {$regex:'true'}}}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
-        latestSeries: async (roor, args) => await Dashpost.find({type: 'series'}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
+        requestMovies: async (roor, args) => await Dashpost.find({type: 'movie', request:'true'}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
+        latestSeries: async (roor, args) => await Dashpost.find({type: 'series', request: {$not : {$regex:'true'}}}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
+        requestSeries: async (roor, args) => await Dashpost.find({type: 'series', request:'true'}).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
         relatedPost: async (roots, args) => await Post.find({ genre: args.genre }).sort({ _id: -1 }).limit(6),
         dashNews: async (root, args) => await Post.find({ genre: args.genre }).sort({ _id: -1 }).limit(6),
         newsPage: async (root, args) => await Dashpost.find({ genre: args.genre, type: args.type }).sort({ _id: -1 }).skip(parseInt(args.pageNumber) > 0 ? ((parseInt(args.pageNumber) - 1) * 15) : 0).limit(15),
@@ -56,14 +58,26 @@ const resolvers = {
             return { count: count }
         },
         latestMoviesCount: async (root, args) => {
-            const count = await Dashpost.find({ type: 'movie' }).count()
+            const count = await Dashpost.find({ type: 'movie', request: {$not : {$regex:'true'}}}).count()
             return { count: count }
         },
 
-        latestSeriesCount: async (root, args) => {
-            const count = await Dashpost.find({ type: 'series' }).count()
+        requestMoviesCount: async (root, args) => {
+            const count = await Dashpost.find({ type: 'movie', request:'true'}).count()
             return { count: count }
         },
+
+
+        latestSeriesCount: async (root, args) => {
+            const count = await Dashpost.find({ type: 'series', request: {$not : {$regex:'true'}} }).count()
+            return { count: count }
+        },
+
+        requestSeriesCount: async (root, args) => {
+            const count = await Dashpost.find({type: 'series', request:'true'}).count()
+            return { count: count }
+        },
+
 
         countryCount: async (root, args) => {
             const count = await Movie.find({ country: args.country }).count()

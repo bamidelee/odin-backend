@@ -163,9 +163,13 @@ const typeDefs = gql`
                 ): Count
         relatedPost(genre: String): [Post]
         latestMovies( pageNumber: String): [Dashpost]
+        requestMovies( pageNumber: String): [Dashpost]
         latestSeries( pageNumber: String): [Dashpost]
+        requestSeries( pageNumber: String): [Dashpost]
         latestMoviesCount: Count
+        requestMoviesCount: Count
         latestSeriesCount: Count
+        requestSeriesCount: Count
         findContentByCountry(
             country: String
             pageNumber: String
